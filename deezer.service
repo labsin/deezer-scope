@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service>
+    <type>deezer-scope.labsin_deezer-scope</type>
+    <name>Deezer Music</name>
+    <provider>deezer-scope.labsin_account</provider>
+</service>

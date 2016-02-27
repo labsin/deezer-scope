@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<provider>
+  <name>Deezer</name>
+  <icon>deezer/deezer_512x512.png</icon>
+  <plugin>generic-oauth</plugin>
+  <domains>.*deezer\.com</domains>
+
+  <template>
+    <group name="auth">
+      <setting name="method">oauth2</setting>
+      <setting name="mechanism">web_server</setting>
+      <group name="oauth2">
+        <group name="web_server">
+          <setting name="Host">connect.deezer.com</setting>
+          <setting name="AuthPath">oauth/auth.php</setting>
+          <setting name="TokenPath">oauth/access_token.php</setting>
+          <setting name="RedirectUri">https://www.wumbo.be/</setting>
+          <setting name="ResponseType">code</setting>
+          <setting name="Display">popup</setting>
+          <setting name="ClientId">172955</setting>
+          <setting name="ClientSecret">7f5d66f2a85723b43f6a65c85cb14b41</setting>
+          <setting type="as" name="AllowedSchemes">['https','http']</setting>
+          <setting type="as" name="Scope">['non-expiring']</setting>
+          <setting name="ForceClientAuthViaRequestBody" type="b">true</setting>  
+      </group>
+      </group>
+    </group>
+  </template>
+</provider>
