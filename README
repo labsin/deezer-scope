@@ -1,1 +1,2 @@
- /usr/ubuntu-sdk-ide/share/qtcreator/ubuntu/scripts/qtc_desktop_scoperunner.py ./deezer-scope.sam-sgrs_deezer-scope.ini
+/usr/ubuntu-sdk-ide/share/qtcreator/ubuntu/scripts/qtc_desktop_scoperunner.py ./deezer-scope.sam-sgrs_deezer-scope.ini
+click chroot -a armhf -f ubuntu-sdk-15.04 -s vivid run CGO_ENABLED=1 GOARCH=arm GOARM=7 PKG_CONFIG_LIBDIR=/usr/lib/arm-linux-gnueabihf/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig GOPATH=~/dev-go CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++ go build -ldflags '-extld=arm-linux-gnueabihf-g++'
