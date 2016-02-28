@@ -2,15 +2,15 @@ package main
 
 import (
 	"encoding/json"
-	"io/ioutil"
-	//"log"
 	"errors"
+	"io/ioutil"
+	"log"
 	"net/http"
+	"net/url"
 	"strconv"
 )
 
-const Limit = 10
-const LimitStr = "10"
+const LimitTracks = "100"
 
 type Artist struct {
 	Id             int
@@ -86,6 +86,7 @@ type Genre struct {
 }
 
 func GetJSON(url string, data interface{}) error {
+	log.Println("Deezer: GetJSON: ", url)
 	resp, err := http.Get(url)
 	if err != nil {
 		return err
@@ -116,7 +117,7 @@ func GetArtistTop(id int) ([]Track, error) {
 		Data []Track
 	}
 	var data Data
-	err := GetJSON("http://api.deezer.com/artist/"+strconv.Itoa(id)+"/top?limit="+LimitStr, &data)
+	err := GetJSON("http://api.deezer.com/artist/"+strconv.Itoa(id)+"/top?limit="+settings.LimitTracksAttribute, &data)
 	if err != nil {
 		return nil, err
 	}
@@ -149,7 +150,7 @@ func GetArtistsFromGenre(genreId string) ([]Artist, error) {
 		Data []Artist
 	}
 	var data Data
-	err := GetJSON("http://api.deezer.com/genre/"+genreId+"/artists", &data)
+	err := GetJSON("http://api.deezer.com/genre/"+genreId+"/artists"+"?limit="+settings.LimitResultsAttribute, &data)
 	if err != nil {
 		return nil, err
 	}
@@ -165,7 +166,7 @@ func GetTracksFromAlbum(id int) ([]Track, error) {
 		Next string
 	}
 	var data Data
-	err := GetJSON("http://api.deezer.com/album/"+strconv.Itoa(id)+"/tracks?limit=100", &data)
+	err := GetJSON("http://api.deezer.com/album/"+strconv.Itoa(id)+"/tracks?limit="+LimitTracks, &data)
 	if err != nil {
 		return nil, err
 	}
@@ -176,11 +177,12 @@ func GetTracksFromAlbum(id int) ([]Track, error) {
 }
 
 func QueryTracks(query string) ([]Track, error) {
+	query = url.QueryEscape(query)
 	type Data struct {
 		Data []Track
 	}
 	var data Data
-	err := GetJSON("http://api.deezer.com/search/track?q="+query, &data)
+	err := GetJSON("http://api.deezer.com/search/track?q="+query+"&order="+settings.SortAttribute+"&limit="+settings.LimitResultsAttribute, &data)
 	if err != nil {
 		return nil, err
 	}
@@ -206,11 +208,12 @@ func QueryRecommendedTracks(token string) ([]Track, error) {
 }
 
 func QueryArtists(query string) ([]Artist, error) {
+	query = url.QueryEscape(query)
 	type Data struct {
 		Data []Artist
 	}
 	var data Data
-	err := GetJSON("http://api.deezer.com/search/artist?q="+query, &data)
+	err := GetJSON("http://api.deezer.com/search/artist?q="+query+"&order="+settings.SortAttribute+"&limit="+settings.LimitResultsAttribute, &data)
 	if err != nil {
 		return nil, err
 	}
@@ -236,11 +239,12 @@ func QueryRecommendedArtists(token string) ([]Artist, error) {
 }
 
 func QueryAlbums(query string) ([]Album, error) {
+	query = url.QueryEscape(query)
 	type Data struct {
 		Data []Album
 	}
 	var data Data
-	err := GetJSON("http://api.deezer.com/search/album?q="+query, &data)
+	err := GetJSON("http://api.deezer.com/search/album?q="+query+"&order="+settings.SortAttribute+"&limit="+settings.LimitResultsAttribute, &data)
 	if err != nil {
 		return nil, err
 	}
