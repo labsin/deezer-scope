@@ -3,6 +3,7 @@ package main
 import (
 	//"encoding/json"
 	//"launchpad.net/go-onlineaccounts/v1"
+	"github.com/gosexy/gettext"
 	"launchpad.net/go-unityscopes/v2"
 	"log"
 	"strconv"
@@ -112,31 +113,59 @@ var genreIds = [24]int{
 	197,
 }
 
-var genreName = [24]string{
-	"All",
-	"Pop",
-	"Rap/Hip Hop",
-	"Rock",
-	"Dance",
-	"R&B/Soul/Funk",
-	"Alternative",
-	"Electro",
-	"Folk",
-	"Reggae",
-	"Jazz",
-	"French Chanson",
-	"Classical",
-	"Films/Games",
-	"Metal",
-	"African Music",
-	"Arabic Music",
-	"Asian Music",
-	"Blues",
-	"Brazilian Music",
-	"German music",
-	"Indian Music",
-	"Kids",
-	"Latin Music",
+var genreName [24]string
+
+func setGenreNames() {
+	genreName = [24]string{
+		//TRANSLATORS: Genre as department
+		gettext.Gettext("All"),
+		//TRANSLATORS: Genre as department
+		gettext.Gettext("Pop"),
+		//TRANSLATORS: Genre as department
+		gettext.Gettext("Rap/Hip Hop"),
+		//TRANSLATORS: Genre as department
+		gettext.Gettext("Rock"),
+		//TRANSLATORS: Genre as department
+		gettext.Gettext("Dance"),
+		//TRANSLATORS: Genre as department
+		gettext.Gettext("R&B/Soul/Funk"),
+		//TRANSLATORS: Genre as department
+		gettext.Gettext("Alternative"),
+		//TRANSLATORS: Genre as department
+		gettext.Gettext("Electro"),
+		//TRANSLATORS: Genre as department
+		gettext.Gettext("Folk"),
+		//TRANSLATORS: Genre as department
+		gettext.Gettext("Reggae"),
+		//TRANSLATORS: Genre as department
+		gettext.Gettext("Jazz"),
+		//TRANSLATORS: Genre as department
+		gettext.Gettext("French Chanson"),
+		//TRANSLATORS: Genre as department
+		gettext.Gettext("Classical"),
+		//TRANSLATORS: Genre as department
+		gettext.Gettext("Films/Games"),
+		//TRANSLATORS: Genre as department
+		gettext.Gettext("Metal"),
+		//TRANSLATORS: Genre as department
+		gettext.Gettext("African Music"),
+		//TRANSLATORS: Genre as department
+		gettext.Gettext("Arabic Music"),
+		//TRANSLATORS: Genre as department
+		gettext.Gettext("Asian Music"),
+		//TRANSLATORS: Genre as department
+		gettext.Gettext("Blues"),
+		//TRANSLATORS: Genre as department
+		gettext.Gettext("Brazilian Music"),
+		//TRANSLATORS: Genre as department
+		gettext.Gettext("German Music"),
+		//TRANSLATORS: Genre as department
+		gettext.Gettext("Indian Music"),
+		//TRANSLATORS: Genre as department
+		gettext.Gettext("Kids"),
+		//TRANSLATORS: Genre as department
+		gettext.Gettext("Latin Music"),
+	}
 }
 
 var settings struct {
@@ -240,15 +269,15 @@ func (s *DeezerScope) Preview(result *scopes.Result, metadata *scopes.ActionMeta
 			widget_picture := scopes.NewPreviewWidget("picture", "image")
 			widget_picture.AddAttributeValue("source", track.Album.Cover_big)
 			widget_release := scopes.NewPreviewWidget("release", "text")
-			widget_release.AddAttributeValue("text", "Released on "+track.Release_date)
+			widget_release.AddAttributeValue("text", gettext.Gettext("Released on ")+track.Release_date)
 			widget_duration := scopes.NewPreviewWidget("duration", "text")
-			widget_duration.AddAttributeValue("text", "Duration of "+SecondsToString(track.Duration))
+			widget_duration.AddAttributeValue("text", gettext.Gettext("Duration of ")+SecondsToString(track.Duration))
 			type att map[string]interface{}
 			widget_actions := scopes.NewPreviewWidget("actions", "actions")
 			actions_atts := make([]att, 0, 10)
 			actions_atts = append(actions_atts, att{
 				"id":    "link",
-				"label": "Link",
+				"label": gettext.Gettext("Link"),
 			})
 			widget_actions.AddAttributeValue("actions", actions_atts)
 			widget_audio := scopes.NewPreviewWidget("audio", "audio")
@@ -279,15 +308,15 @@ func (s *DeezerScope) Preview(result *scopes.Result, metadata *scopes.ActionMeta
 			widget_fans := scopes.NewPreviewWidget("fans", "text")
 			widget_fans.AddAttributeValue("text", ` <img src="image://theme/starred" align="middle" width="15" height="15">`+strconv.Itoa(album.Fans))
 			widget_release := scopes.NewPreviewWidget("release", "text")
-			widget_release.AddAttributeValue("text", "Released on "+album.Release_date)
+			widget_release.AddAttributeValue("text", gettext.Gettext("Released on ")+album.Release_date)
 			widget_duration := scopes.NewPreviewWidget("duration", "text")
-			widget_duration.AddAttributeValue("text", "Duration of "+SecondsToString(album.Duration))
+			widget_duration.AddAttributeValue("text", gettext.Gettext("Duration of ")+SecondsToString(album.Duration))
 			type att map[string]interface{}
 			widget_actions := scopes.NewPreviewWidget("actions", "actions")
 			actions_atts := make([]att, 0, 10)
 			actions_atts = append(actions_atts, att{
 				"id":    "link",
-				"label": "Link",
+				"label": gettext.Gettext("Link"),
 			})
 			widget_actions.AddAttributeValue("actions", actions_atts)
 			widget_audio := scopes.NewPreviewWidget("audio", "audio")
@@ -363,7 +392,7 @@ func (s *DeezerScope) Preview(result *scopes.Result, metadata *scopes.ActionMeta
 			actions_atts := make([]att, 0, 10)
 			actions_atts = append(actions_atts, att{
 				"id":    "link",
-				"label": "Link",
+				"label": gettext.Gettext("Link"),
 			})
 			widget_actions.AddAttributeValue("actions", actions_atts)
 			widget_audio := scopes.NewPreviewWidget("audio", "audio")
@@ -405,7 +434,7 @@ func (s *DeezerScope) Search(query *scopes.CannedQuery, metadata *scopes.SearchM
 			log.Println("Deezer: Search: err: ", err)
 			return err
 		}
-		category := reply.RegisterCategory("query_track", "Found tracks", "", trackCategoryTemplate)
+		category := reply.RegisterCategory("query_track", gettext.Gettext("Found tracks"), "", trackCategoryTemplate)
 		for _, track := range tracks {
 			result := scopes.NewCategorisedResult(category)
 			result.Set("type", "track")
@@ -434,7 +463,7 @@ func (s *DeezerScope) Search(query *scopes.CannedQuery, metadata *scopes.SearchM
 				log.Println("Deezer: Search: err: ", err2)
 				return err2
 			}
-			category = reply.RegisterCategory("query_artist", "Found artists", "", artistCategoryTemplate)
+			category = reply.RegisterCategory("query_artist", gettext.Gettext("Found artists"), "", artistCategoryTemplate)
 			for _, artist := range artists {
 				result := scopes.NewCategorisedResult(category)
 				result.Set("type", "artist")
@@ -463,7 +492,7 @@ func (s *DeezerScope) Search(query *scopes.CannedQuery, metadata *scopes.SearchM
 				log.Println("Deezer: Search: err: ", err3)
 				return err3
 			}
-			category = reply.RegisterCategory("query_album", "Found albums", "", albumCategoryTemplate)
+			category = reply.RegisterCategory("query_album", gettext.Gettext("Found albums"), "", albumCategoryTemplate)
 			for _, album := range albums {
 				result := scopes.NewCategorisedResult(category)
 				result.Set("type", "album")
@@ -515,7 +544,7 @@ func (s *DeezerScope) Search(query *scopes.CannedQuery, metadata *scopes.SearchM
 				log.Println("Deezer: Search: err: ", err)
 				return err
 			}
-			category := reply.RegisterCategory("query_track", "Found tracks", "", trackCategoryTemplate)
+			category := reply.RegisterCategory("query_track", gettext.Gettext("Found tracks"), "", trackCategoryTemplate)
 			for _, track := range tracks {
 				result := scopes.NewCategorisedResult(category)
 				result.Set("type", "track")
@@ -543,7 +572,7 @@ func (s *DeezerScope) Search(query *scopes.CannedQuery, metadata *scopes.SearchM
 				log.Println("Deezer: Search: err: ", err2)
 				return err2
 			}
-			category = reply.RegisterCategory("query_artist", "Found artists", "", artistCategoryTemplate)
+			category = reply.RegisterCategory("query_artist", gettext.Gettext("Found artists"), "", artistCategoryTemplate)
 			for _, artist := range artists {
 				result := scopes.NewCategorisedResult(category)
 				result.Set("type", "artist")
@@ -572,7 +601,7 @@ func (s *DeezerScope) Search(query *scopes.CannedQuery, metadata *scopes.SearchM
 				log.Println("Deezer: Search: err: ", err3)
 				return err3
 			}
-			category = reply.RegisterCategory("query_album", "Found albums", "", albumCategoryTemplate)
+			category = reply.RegisterCategory("query_album", gettext.Gettext("Found albums"), "", albumCategoryTemplate)
 			for _, album := range albums {
 				result := scopes.NewCategorisedResult(category)
 				result.Set("type", "album")
@@ -610,7 +639,7 @@ func (s *DeezerScope) Search(query *scopes.CannedQuery, metadata *scopes.SearchM
 				// Not logged in, so add nag
 				cat := reply.RegisterCategory("nag", "", "", loginNagTemplate)
 				result := scopes.NewCategorisedResult(cat)
-				result.SetTitle("Log in to deezer")
+				result.SetTitle(gettext.Gettext("Log in to Deezer"))
 				reg_err := scopes.RegisterAccountLoginResult(result, query, "deezer-scope.labsin_deezer-scope", "deezer-scope.labsin_deezer-scope", "deezer-scope.labsin_account", scopes.PostLoginInvalidateResults, scopes.PostLoginDoNothing)
 				if reg_err != nil {
 					log.Println("Deezer: Search: RegisterAccountLoginResult err: ", reg_err)
@@ -636,7 +665,7 @@ func (s *DeezerScope) Search(query *scopes.CannedQuery, metadata *scopes.SearchM
 				log.Println("Deezer: Search: err: ", err)
 				return err
 			}
-			category := reply.RegisterCategory("artists", "Artists", "", artistFromGenreCategoryTemplate)
+			category := reply.RegisterCategory("artists", gettext.Gettext("Artists"), "", artistFromGenreCategoryTemplate)
 			for _, artist := range artists {
 				result := scopes.NewCategorisedResult(category)
 				result.Set("type", "artist")
@@ -658,8 +687,8 @@ func (s *DeezerScope) Search(query *scopes.CannedQuery, metadata *scopes.SearchM
 }
 
 func (s *DeezerScope) CreateDepartments(query *scopes.CannedQuery, metadata *scopes.SearchMetadata, reply *scopes.SearchReply) *scopes.Department {
-	department, _ := scopes.NewDepartment("", query, "Browse Music")
-	department.SetAlternateLabel("Browse All Music")
+	department, _ := scopes.NewDepartment("", query, gettext.Gettext("Browse Music"))
+	department.SetAlternateLabel(gettext.Gettext("Browse All Music"))
 	for i, name := range genreName {
 		if i == 0 {
 			continue

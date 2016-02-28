@@ -1,0 +1,207 @@
+# Dutch translations for deezer-scope package.
+# Copyright (C) 2016 THE deezer-scope'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the deezer-scope package.
+# sam <sam.sgrs@gmail.com>, 2016.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: deezer-scope 0.1\n"
+"Report-Msgid-Bugs-To: sam.sgrs@gmail.com\n"
+"POT-Creation-Date: 2016-02-28 19:58+0100\n"
+"PO-Revision-Date: 2016-02-28 19:58+0100\n"
+"Last-Translator: sam <sam.sgrs@gmail.com>\n"
+"Language-Team: Dutch\n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. TRANSLATORS: Genre as department
+#: ../deezer/deezer-scope.go:121
+msgid "All"
+msgstr "Allemaal"
+
+#. TRANSLATORS: Genre as department
+#: ../deezer/deezer-scope.go:123
+msgid "Pop"
+msgstr ""
+
+#. TRANSLATORS: Genre as department
+#: ../deezer/deezer-scope.go:125
+msgid "Rap/Hip Hop"
+msgstr ""
+
+#. TRANSLATORS: Genre as department
+#: ../deezer/deezer-scope.go:127
+msgid "Rock"
+msgstr ""
+
+#. TRANSLATORS: Genre as department
+#: ../deezer/deezer-scope.go:129
+msgid "Dance"
+msgstr ""
+
+#. TRANSLATORS: Genre as department
+#: ../deezer/deezer-scope.go:131
+msgid "R&B/Soul/Funk"
+msgstr ""
+
+#. TRANSLATORS: Genre as department
+#: ../deezer/deezer-scope.go:133
+msgid "Alternative"
+msgstr "Alternatief"
+
+#. TRANSLATORS: Genre as department
+#: ../deezer/deezer-scope.go:135
+msgid "Electro"
+msgstr ""
+
+#. TRANSLATORS: Genre as department
+#: ../deezer/deezer-scope.go:137
+msgid "Folk"
+msgstr ""
+
+#. TRANSLATORS: Genre as department
+#: ../deezer/deezer-scope.go:139
+msgid "Reggae"
+msgstr ""
+
+#. TRANSLATORS: Genre as department
+#: ../deezer/deezer-scope.go:141
+msgid "Jazz"
+msgstr ""
+
+#. TRANSLATORS: Genre as department
+#: ../deezer/deezer-scope.go:143
+msgid "French Chanson"
+msgstr "Franse Chanson"
+
+#. TRANSLATORS: Genre as department
+#: ../deezer/deezer-scope.go:145
+msgid "Classical"
+msgstr "Klassiek"
+
+#. TRANSLATORS: Genre as department
+#: ../deezer/deezer-scope.go:147
+msgid "Films/Games"
+msgstr ""
+
+#. TRANSLATORS: Genre as department
+#: ../deezer/deezer-scope.go:149
+msgid "Metal"
+msgstr ""
+
+#. TRANSLATORS: Genre as department
+#: ../deezer/deezer-scope.go:151
+msgid "African Music"
+msgstr "Afrikaanse Muziek"
+
+#. TRANSLATORS: Genre as department
+#: ../deezer/deezer-scope.go:153
+msgid "Arabic Music"
+msgstr "Arabische Muziek"
+
+#. TRANSLATORS: Genre as department
+#: ../deezer/deezer-scope.go:155
+msgid "Asian Music"
+msgstr "Asiatische Muziek"
+
+#. TRANSLATORS: Genre as department
+#: ../deezer/deezer-scope.go:157
+msgid "Blues"
+msgstr ""
+
+#. TRANSLATORS: Genre as department
+#: ../deezer/deezer-scope.go:159
+msgid "Brazilian Music"
+msgstr "braziliaanse Muziek"
+
+#. TRANSLATORS: Genre as department
+#: ../deezer/deezer-scope.go:161
+msgid "German music"
+msgstr "Duitse Muziek"
+
+#. TRANSLATORS: Genre as department
+#: ../deezer/deezer-scope.go:163
+msgid "Indian Music"
+msgstr "Indische Muziek"
+
+#. TRANSLATORS: Genre as department
+#: ../deezer/deezer-scope.go:165
+msgid "Kids"
+msgstr "Kinder"
+
+#. TRANSLATORS: Genre as department
+#: ../deezer/deezer-scope.go:167
+msgid "Latin Music"
+msgstr "Latina Muziek"
+
+#: ../deezer/deezer-scope.go:273 ../deezer/deezer-scope.go:312
+msgid "Released on "
+msgstr "Uitgebracht op"
+
+#: ../deezer/deezer-scope.go:275 ../deezer/deezer-scope.go:314
+msgid "Duration of "
+msgstr "Duur van "
+
+#: ../deezer/deezer-scope.go:281 ../deezer/deezer-scope.go:320
+#: ../deezer/deezer-scope.go:396
+msgid "Link"
+msgstr "Link"
+
+#: ../deezer/deezer-scope.go:438 ../deezer/deezer-scope.go:548
+msgid "Found tracks"
+msgstr "Gevonden nummers"
+
+#: ../deezer/deezer-scope.go:467 ../deezer/deezer-scope.go:576
+msgid "Found artists"
+msgstr "Gevonden artisten"
+
+#: ../deezer/deezer-scope.go:496 ../deezer/deezer-scope.go:605
+msgid "Found albums"
+msgstr "Gevonden albums"
+
+#: ../deezer/deezer-scope.go:643
+msgid "Log in to deezer"
+msgstr "Log in op Deezer"
+
+#: ../deezer/deezer-scope.go:669
+msgid "Artists"
+msgstr "Artisten"
+
+#: ../deezer/deezer-scope.go:691
+msgid "Browse Music"
+msgstr "Doorblader Muziek"
+
+#: ../deezer/deezer-scope.go:692
+msgid "Browse All Music"
+msgstr "Doorblader Alle Muziek"
+
+#: deezer-scope.labsin_deezer-scope.ini.in.h:1
+msgid "Deezer"
+msgstr "Deezer"
+
+#: deezer-scope.labsin_deezer-scope.ini.in.h:2
+msgid "Discover the Deezer database"
+msgstr "Ontdek de Deezer database"
+
+#: deezer-scope.labsin_deezer-scope-settings.ini.in.h:1
+msgid "Sort Mode"
+msgstr "Sorteermodus"
+
+#: deezer-scope.labsin_deezer-scope-settings.ini.in.h:2
+msgid "Ranking;Rating;Track;Album;Artist;Duration"
+msgstr "Ranking;Rating;Nummer;Album;Artiest;Duur"
+
+#: deezer-scope.labsin_deezer-scope-settings.ini.in.h:3
+msgid "Sort Ascending (doesn't apply to Ranking)"
+msgstr "Sorteer Oplopend (niet toepasselijk bij Ranking)"
+
+#: deezer-scope.labsin_deezer-scope-settings.ini.in.h:4
+msgid "Number of results to retrieve per query"
+msgstr "Aantal resultaten per opzoeking"
+
+#: deezer-scope.labsin_deezer-scope-settings.ini.in.h:5
+msgid "Number of top tracks to retrieve of an artist"
+msgstr "Aantal op te halen top nummers voor een artist"
