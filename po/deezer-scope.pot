@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: deezer-scope 0.1\n"
 "Report-Msgid-Bugs-To: sam.sgrs@gmail.com\n"
-"POT-Creation-Date: 2016-02-28 19:58+0100\n"
+"POT-Creation-Date: 2016-02-28 22:03+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -119,7 +119,7 @@ msgstr ""
 
 #. TRANSLATORS: Genre as department
 #: ../deezer/deezer-scope.go:161
-msgid "German music"
+msgid "German Music"
 msgstr ""
 
 #. TRANSLATORS: Genre as department
@@ -163,7 +163,7 @@ msgid "Found albums"
 msgstr ""
 
 #: ../deezer/deezer-scope.go:643
-msgid "Log in to deezer"
+msgid "Log in to Deezer"
 msgstr ""
 
 #: ../deezer/deezer-scope.go:669
@@ -178,30 +178,69 @@ msgstr ""
 msgid "Browse All Music"
 msgstr ""
 
-#: deezer-scope.labsin_deezer-scope.ini.in.h:1
+#. Scope overview SearchHint
+#: deezer-scope.labsin_deezer-scope.ini.in.h:2
 msgid "Deezer"
 msgstr ""
 
-#: deezer-scope.labsin_deezer-scope.ini.in.h:2
+#. Scope overview Description
+#: deezer-scope.labsin_deezer-scope.ini.in.h:4
 msgid "Discover the Deezer database"
 msgstr ""
 
-#: deezer-scope.labsin_deezer-scope-settings.ini.in.h:1
+#. Scope settings
+#: deezer-scope.labsin_deezer-scope-settings.ini.in.h:2
 msgid "Sort Mode"
 msgstr ""
 
-#: deezer-scope.labsin_deezer-scope-settings.ini.in.h:2
+#: deezer-scope.labsin_deezer-scope-settings.ini.in.h:3
 msgid "Ranking;Rating;Track;Album;Artist;Duration"
 msgstr ""
 
-#: deezer-scope.labsin_deezer-scope-settings.ini.in.h:3
+#. Scope settings
+#: deezer-scope.labsin_deezer-scope-settings.ini.in.h:5
 msgid "Sort Ascending (doesn't apply to Ranking)"
 msgstr ""
 
-#: deezer-scope.labsin_deezer-scope-settings.ini.in.h:4
+#. Scope settings
+#: deezer-scope.labsin_deezer-scope-settings.ini.in.h:7
 msgid "Number of results to retrieve per query"
 msgstr ""
 
-#: deezer-scope.labsin_deezer-scope-settings.ini.in.h:5
+#. Scope settings
+#: deezer-scope.labsin_deezer-scope-settings.ini.in.h:9
 msgid "Number of top tracks to retrieve of an artist"
+msgstr ""
+
+#. Click store title
+#: ../myapps.xml.in.h:2
+msgid "Deezer Scope"
+msgstr ""
+
+#. Click store tagline
+#: ../myapps.xml.in.h:4
+msgid "Unofficial app to discover the Deezer database"
+msgstr ""
+
+#. Click store description
+#: ../myapps.xml.in.h:6
+msgid ""
+"Discover the wide range of music in the Deezer database. You can listen to "
+"previews and view the details of the wide collection of Deezer songs.&#10;"
+"&#13; Surfacing modes allows to discover new artists per genre.&#10;&#13;"
+"&#10;&#13; Search mode searches for tracks, artists and albums.&#10;&#13; "
+"Advanced searches can also be performed with:&#10;&#13; 'artist: &lt;"
+"name&gt;'&#10;&#13; 'album: &lt;name&gt;'&#10;&#13; 'track: &lt;"
+"name&gt;'&#10;&#13; 'label: &lt;name&gt;'&#10;&#13; 'dur_min: &lt;"
+"dur&gt;'&#10;&#13; 'dur_max: &lt;dur&gt;'&#10;&#13; 'bpm_min &lt;"
+"bpm&gt;'&#10;&#13; 'bpm_max &lt;bpm&gt;'&#10;&#13;&#10;&#13; The sorting can "
+"be set in the settings.&#10;&#13;&#10;&#13; Setting up an account, getting "
+"more personalized results and translations will be implemented in the near "
+"future. &#10;&#13;&#10;&#13; !!This app is in no way affiliated with www."
+"deezer.com.!!"
+msgstr ""
+
+#. Click store keywords
+#: ../myapps.xml.in.h:8
+msgid "deezer, music, stream, discover, scope"
 msgstr ""

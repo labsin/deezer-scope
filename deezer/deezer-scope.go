@@ -704,6 +704,11 @@ func (s *DeezerScope) CreateDepartments(query *scopes.CannedQuery, metadata *sco
 func main() {
 	log.Println("Deezer: main")
 	/*TODO:
+	textDomain := "deezer-scope"
+
+	gettext.Textdomain(textDomain)
+
+	setGenreNames()
 	watcher := accounts.NewWatcher("deezer-scope.labsin_deezer-scope", []string{"deezer-scope.labsin_account"})
 	watcher.Settle()*/
 	scope := &DeezerScope{

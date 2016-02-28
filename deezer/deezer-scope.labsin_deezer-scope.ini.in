@@ -1,10 +1,13 @@
 [ScopeConfig]
 ScopeRunner = deezer-scope --runtime %R --scope %S
+#Scope overview DisplayName
 _DisplayName = Deezer
+#Scope overview Description
 _Description = Discover the Deezer database
 Author = Sam Segers
 #Art = screenshot
 Icon = deezer_512x512.png
+#Scope overview SearchHint
 _SearchHint = Deezer
 Keywords = music
 #HotKey = mock.HotKey
