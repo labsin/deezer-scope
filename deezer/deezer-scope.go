@@ -2,8 +2,8 @@ package main
 
 import (
 	//"encoding/json"
-	//"launchpad.net/go-onlineaccounts/v1"
 	"github.com/gosexy/gettext"
+	"launchpad.net/go-onlineaccounts/v1"
 	"launchpad.net/go-unityscopes/v2"
 	"log"
 	"strconv"
@@ -185,11 +185,20 @@ var scope_interface scopes.Scope
 type DeezerScope struct {
 	ClientId string
 	//TODO:	Accounts *accounts.Watcher
-	base *scopes.ScopeBase
+	Accounts *accounts.Watcher
+	base     *scopes.ScopeBase
 }
 
 func (s *DeezerScope) SetScopeBase(base *scopes.ScopeBase) {
 	s.base = base
+	textDomain := "deezer-scope"
+	gettext.BindTextdomain(textDomain, base.ScopeDirectory()+"/../share/locale")
+
+	gettext.Textdomain(textDomain)
+
+	//gettext.SetLocale(gettext.LcAll, "nl_NL.utf8")
+
+	setGenreNames()
 }
 func (s *DeezerScope) SetGlobalSettings() {
 	err := s.base.Settings(&settings)
@@ -519,23 +528,23 @@ func (s *DeezerScope) Search(query *scopes.CannedQuery, metadata *scopes.SearchM
 		// Surfacing mode
 		log.Println("Deezer: Search: Surfacing")
 		accessToken := ""
-		/*TODO:
+		/*TODO:*/
 		services := s.Accounts.EnabledServices()
-		log.Printf("Number of enabled services: %v\n", len(services))
+		log.Printf("Deezer: Number of enabled services: %v\n", len(services))
 		if len(services) > 0 {
 			service := services[0]
-			log.Printf("Service: %#v\n", service)
+			log.Printf("Deezer: Service: %#v\n", service)
 			// If the service is in an error state, try
 			// and refresh it.
 			if service.Error != nil {
-				::service = s.Accounts.Refresh(service.AccountId, false)
-				log.Printf("Refreshed: %#v\n", service)
+				service = s.Accounts.Refresh(service.AccountId, false)
+				log.Printf("Deezer: Refreshed: %#v\n", service)
 			}
 			if service.Error == nil {
 				accessToken = service.AccessToken
 			}
 		}
-		*/
+		/**/
 
 		if accessToken != "" {
 			log.Println("Deezer: Search: Account")
@@ -703,17 +712,14 @@ func (s *DeezerScope) CreateDepartments(query *scopes.CannedQuery, metadata *sco
 
 func main() {
 	log.Println("Deezer: main")
-	/*TODO:
-	textDomain := "deezer-scope"
 
-	gettext.Textdomain(textDomain)
-
-	setGenreNames()
+	/*TODO:*/
 	watcher := accounts.NewWatcher("deezer-scope.labsin_deezer-scope", []string{"deezer-scope.labsin_account"})
-	watcher.Settle()*/
+	watcher.Settle() /**/
 	scope := &DeezerScope{
 		ClientId: "172955",
 		//TODO: Accounts: watcher,
+		Accounts: watcher,
 	}
 	if err := scopes.Run(scope); err != nil {
 		log.Fatalln(err)
