@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: deezer-scope 0.1\n"
 "Report-Msgid-Bugs-To: sam.sgrs@gmail.com\n"
-"POT-Creation-Date: 2016-02-28 22:02+0100\n"
+"POT-Creation-Date: 2016-02-28 22:11+0100\n"
 "PO-Revision-Date: 2016-02-28 19:58+0100\n"
 "Last-Translator: sam <sam.sgrs@gmail.com>\n"
 "Language-Team: Dutch\n"
@@ -213,17 +213,17 @@ msgid "Number of top tracks to retrieve of an artist"
 msgstr "Aantal op te halen top nummers voor een artist"
 
 #. Click store title
-#: ../myapps.xml.in.h:2
+#: myapps.xml.in.h:2
 msgid "Deezer Scope"
 msgstr "Deezer Scope"
 
 #. Click store tagline
-#: ../myapps.xml.in.h:4
+#: myapps.xml.in.h:4
 msgid "Unofficial app to discover the Deezer database"
 msgstr "Officieuze app om de Deezer database te ontdekken"
 
 #. Click store description
-#: ../myapps.xml.in.h:6
+#: myapps.xml.in.h:6
 msgid ""
 "Discover the wide range of music in the Deezer database. You can listen to "
 "previews and view the details of the wide collection of Deezer songs.&#10;"
@@ -236,11 +236,11 @@ msgid ""
 "bpm&gt;'&#10;&#13; 'bpm_max &lt;bpm&gt;'&#10;&#13;&#10;&#13; The sorting can "
 "be set in the settings.&#10;&#13;&#10;&#13; Setting up an account, getting "
 "more personalized results and translations will be implemented in the near "
-"future. &#10;&#13;&#10;&#13; !!This app is in no way affiliated with www."
-"deezer.com.!!"
+"future.&#10;&#13;&#10;&#13; Feel free to contact me for translations.&#10;"
+"&#13;&#10;&#13; !!This app is in no way affiliated with www.deezer.com.!!"
 msgstr ""
 
 #. Click store keywords
-#: ../myapps.xml.in.h:8
+#: myapps.xml.in.h:8
 msgid "deezer, music, stream, discover, scope"
 msgstr ""

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<myapps>
+
+<entry>Deezer Scope</entry>
+<entry xml:lang="nl">Deezer Scope</entry>
+
+<entry>Unofficial app to discover the Deezer database</entry>
+<entry xml:lang="nl">Officieuze app om de Deezer database te ontdekken</entry>
+
+<entry>Discover the wide range of music in the Deezer database. You can listen to previews and view the details of the wide collection of Deezer songs.&#10;&#13; Surfacing modes allows to discover new artists per genre.&#10;&#13;&#10;&#13; Search mode searches for tracks, artists and albums.&#10;&#13; Advanced searches can also be performed with:&#10;&#13; 'artist: &lt;name&gt;'&#10;&#13; 'album: &lt;name&gt;'&#10;&#13; 'track: &lt;name&gt;'&#10;&#13; 'label: &lt;name&gt;'&#10;&#13; 'dur_min: &lt;dur&gt;'&#10;&#13; 'dur_max: &lt;dur&gt;'&#10;&#13; 'bpm_min &lt;bpm&gt;'&#10;&#13; 'bpm_max &lt;bpm&gt;'&#10;&#13;&#10;&#13; The sorting can be set in the settings.&#10;&#13;&#10;&#13; Setting up an account, getting more personalized results and translations will be implemented in the near future.&#10;&#13;&#10;&#13; Feel free to contact me for translations.&#10;&#13;&#10;&#13; !!This app is in no way affiliated with www.deezer.com.!!</entry>
+
+<entry>deezer, music, stream, discover, scope</entry>
+</myapps>
