@@ -3,21 +3,23 @@
 <_entry>Deezer Scope</_entry>
 <!--Click store tagline-->
 <_entry>Unofficial app to discover the Deezer database</_entry>
-<!--Click store description-->
+<!--Click store description. Don't translate the 'artist', 'album',... entries. you can translate the ones between &lt and &gt. Just keep the HTML codes -->
 <_entry>Discover the wide range of music in the Deezer database. You can listen to previews and view the details of the wide collection of Deezer songs.&#10;&#13;
-Surfacing modes allows to discover new artists per genre.&#10;&#13;&#10;&#13;
+Surfacing mode allows to discover new artists per genre.&#10;&#13;&#10;&#13;
 Search mode searches for tracks, artists and albums.&#10;&#13;
 Advanced searches can also be performed with:&#10;&#13;
-'artist: &lt;name&gt;'&#10;&#13;
-'album: &lt;name&gt;'&#10;&#13;
-'track: &lt;name&gt;'&#10;&#13;
-'label: &lt;name&gt;'&#10;&#13;
-'dur_min: &lt;dur&gt;'&#10;&#13;
-'dur_max: &lt;dur&gt;'&#10;&#13;
-'bpm_min  &lt;bpm&gt;'&#10;&#13;
-'bpm_max  &lt;bpm&gt;'&#10;&#13;&#10;&#13;
+'artist: &lt;artist name&gt;'&#10;&#13;
+'album: &lt;album name&gt;'&#10;&#13;
+'track: &lt;track name&gt;'&#10;&#13;
+'label: &lt;lable name&gt;'&#10;&#13;
+'dur_min: &lt;minimum duration in sec&gt;'&#10;&#13;
+'dur_max: &lt;maximum duration in sec&gt;'&#10;&#13;
+'bpm_min  &lt;minimum bpm&gt;'&#10;&#13;
+'bpm_max  &lt;maximum bpm&gt;'&#10;&#13;&#10;&#13;
 The sorting can be set in the settings.&#10;&#13;&#10;&#13;
 Setting up an account, getting more personalized results and translations will be implemented in the near future.&#10;&#13;&#10;&#13;
+Translators:&#10;&#13;
+Emanuele Antonio Faraone (it)&#10;&#13;&#10;&#13;
 Feel free to contact me for translations.&#10;&#13;&#10;&#13;
 !!This app is in no way affiliated with www.deezer.com.!!</_entry>
 <!--Click store keywords-->
