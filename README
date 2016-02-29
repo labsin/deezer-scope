@@ -1,2 +1,29 @@
-/usr/ubuntu-sdk-ide/share/qtcreator/ubuntu/scripts/qtc_desktop_scoperunner.py ./deezer-scope.sam-sgrs_deezer-scope.ini
-click chroot -a armhf -f ubuntu-sdk-15.04 -s vivid run CGO_ENABLED=1 GOARCH=arm GOARM=7 PKG_CONFIG_LIBDIR=/usr/lib/arm-linux-gnueabihf/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig GOPATH=~/dev-go CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++ go build -ldflags '-extld=arm-linux-gnueabihf-g++'
+Deezer Scope
+------------
+
+Scope build for Unity8 (ubuntu on phone)
+
+Discover the wide range of music in the Deezer database. You can listen to previews and view the details of the wide collection of Deezer songs.
+Surfacing mode allows to discover new artists per genre.
+
+Search mode searches for tracks, artists and albums.
+Advanced searches can also be performed with:
+'artist: <artist name>'
+'album: <album name>'
+'track: <track name>'
+'label: <lable name>'
+'dur_min: <minimum duration in sec>'
+'dur_max: <maximum duration in sec>'
+'bpm_min <minimum bpm>'
+'bpm_max <maximum bpm>'
+
+The sorting can be set in the settings.
+
+Setting up an account, getting more personalized results and translations will be implemented in the near future.
+
+Translators:
+Emanuele Antonio Faraone (it)
+
+Feel free to contact me for translations.
+
+!!This app is in no way affiliated with www.deezer.com.!!
