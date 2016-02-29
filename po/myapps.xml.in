@@ -11,7 +11,7 @@ Advanced searches can also be performed with:&#10;&#13;
 'artist: &lt;artist name&gt;'&#10;&#13;
 'album: &lt;album name&gt;'&#10;&#13;
 'track: &lt;track name&gt;'&#10;&#13;
-'label: &lt;lable name&gt;'&#10;&#13;
+'label: &lt;label name&gt;'&#10;&#13;
 'dur_min: &lt;minimum duration in sec&gt;'&#10;&#13;
 'dur_max: &lt;maximum duration in sec&gt;'&#10;&#13;
 'bpm_min  &lt;minimum bpm&gt;'&#10;&#13;

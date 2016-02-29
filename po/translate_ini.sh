@@ -7,3 +7,4 @@ mv deezer-scope.labsin_deezer-scope.ini ../deezer/deezer-scope.labsin_deezer-sco
 mv deezer-scope.labsin_deezer-scope-settings.ini ../deezer/deezer-scope.labsin_deezer-scope-settings.ini
 rm deezer-scope.labsin_deezer-scope.ini.in
 rm deezer-scope.labsin_deezer-scope-settings.ini.in
+sed -e 's/&#10;&#13; /\n/g' myapps.xml | sed -e 's/&#10;&#13;/\n/g' | sed -e 's/&lt;/\</g' | sed -e 's/&gt;/\>/g' > myapps.xml
