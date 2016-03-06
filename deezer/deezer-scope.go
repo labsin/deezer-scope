@@ -7,6 +7,7 @@ import (
 	"launchpad.net/go-unityscopes/v2"
 	"log"
 	"strconv"
+	"strings"
 )
 
 const loginNagTemplate = `{
@@ -168,14 +169,22 @@ func setGenreNames() {
 	}
 }
 
-var settings struct {
+type Settings struct {
 	SortMode              int
 	SortOrder             bool
 	LimitTracks           int
 	LimitResults          int
-	SortAttribute         string "RANKING"
-	LimitTracksAttribute  string "10"
-	LimitResultsAttribute string "20"
+	SortAttribute         string
+	LimitTracksAttribute  string
+	LimitResultsAttribute string
+	AccessToken           string
+	BaseURL               string
+}
+
+var settings Settings
+
+func (s *Settings) HasAccess() bool {
+	return s.AccessToken != ""
 }
 
 // SCOPE ***********************************************************************
@@ -184,13 +193,15 @@ var scope_interface scopes.Scope
 
 type DeezerScope struct {
 	ClientId string
-	//TODO:	Accounts *accounts.Watcher
 	Accounts *accounts.Watcher
 	base     *scopes.ScopeBase
 }
 
 func (s *DeezerScope) SetScopeBase(base *scopes.ScopeBase) {
 	s.base = base
+	if base == nil {
+		return
+	}
 	textDomain := "deezer-scope"
 	gettext.BindTextdomain(textDomain, base.ScopeDirectory()+"/../share/locale")
 
@@ -201,6 +212,7 @@ func (s *DeezerScope) SetScopeBase(base *scopes.ScopeBase) {
 	setGenreNames()
 }
 func (s *DeezerScope) SetGlobalSettings() {
+	settings = Settings{SortAttribute: "RANKING", LimitTracksAttribute: "10", LimitResultsAttribute: "20", BaseURL: "http://api.deezer.com"}
 	err := s.base.Settings(&settings)
 	if err != nil {
 		log.Println("Deezer: SetGlobalSettings: ", err)
@@ -249,6 +261,24 @@ func (s *DeezerScope) SetGlobalSettings() {
 		}
 		break
 	}
+
+	accessToken := ""
+	services := s.Accounts.EnabledServices()
+	log.Printf("Deezer: Number of enabled services: %v\n", len(services))
+	if len(services) > 0 {
+		service := services[0]
+		log.Printf("Deezer: Service: %#v\n", service)
+		// If the service is in an error state, try
+		// and refresh it.
+		if service.Error != nil {
+			service = s.Accounts.Refresh(service.AccountId, false)
+			log.Printf("Deezer: Refreshed: %#v\n", service)
+		}
+		if service.Error == nil {
+			accessToken = service.AccessToken
+		}
+	}
+	settings.AccessToken = accessToken
 }
 
 func (s *DeezerScope) Preview(result *scopes.Result, metadata *scopes.ActionMetadata, reply *scopes.PreviewReply, cancelled <-chan bool) error {
@@ -428,284 +458,401 @@ func (s *DeezerScope) Preview(result *scopes.Result, metadata *scopes.ActionMeta
 	return nil
 }
 
-func (s *DeezerScope) Search(query *scopes.CannedQuery, metadata *scopes.SearchMetadata, reply *scopes.SearchReply, cancelled <-chan bool) error {
-	s.SetGlobalSettings()
-
+func (s *DeezerScope) SearchQuery(query *scopes.CannedQuery, metadata *scopes.SearchMetadata, reply *scopes.SearchReply, cancelled <-chan bool) error {
+	log.Println("Deezer: SearchQuery")
 	var queryString string = query.QueryString()
 	var isAggregated bool = metadata.IsAggregated()
 
-	log.Println("Deezer: Search: queryString: ", queryString)
-	log.Println("Deezer: Search: aggregated: ", isAggregated)
+	var tracks, err = QueryTracks(queryString)
+	if err != nil {
+		log.Println("Deezer: SearchQuery: err: ", err)
+		return err
+	}
+	category := reply.RegisterCategory("query_track", gettext.Gettext("Found tracks"), "", trackCategoryTemplate)
+	for _, track := range tracks {
+		result := scopes.NewCategorisedResult(category)
+		result.Set("type", "track")
+		result.Set("id", track.Id)
+		result.SetArt(track.Album.Cover)
+		result.SetTitle(track.Title)
+		result.Set("album", track.Album.Title)
+		result.Set("artist", track.Artist.Name)
+		var artistAttr [1]map[string]string
+		artistAttr[0] = make(map[string]string)
+		artistAttr[0]["value"] = track.Artist.Name
+		result.Set("artistAttr", artistAttr)
+		uriTail := track.Artist.Name + "/" + track.Album.Title + "/" + track.Title
+		result.SetURI(track.Link)
+		result.SetDndURI("http://localhost_dndrui/" + uriTail)
 
-	if queryString != "" {
-		var tracks, err = QueryTracks(queryString)
+		err = reply.Push(result)
 		if err != nil {
-			log.Println("Deezer: Search: err: ", err)
+			log.Println("Deezer: SearchQuery: err: ", err)
 			return err
 		}
-		category := reply.RegisterCategory("query_track", gettext.Gettext("Found tracks"), "", trackCategoryTemplate)
-		for _, track := range tracks {
+	}
+	if !isAggregated {
+		var artists, err2 = QueryArtists(queryString)
+		if err2 != nil {
+			log.Println("Deezer: SearchQuery: err: ", err2)
+			return err2
+		}
+		category = reply.RegisterCategory("query_artist", gettext.Gettext("Found artists"), "", artistCategoryTemplate)
+		for _, artist := range artists {
 			result := scopes.NewCategorisedResult(category)
-			result.Set("type", "track")
-			result.Set("id", track.Id)
-			result.SetArt(track.Album.Cover)
-			result.SetTitle(track.Title)
-			result.Set("album", track.Album.Title)
-			result.Set("artist", track.Artist.Name)
-			var artistAttr [1]map[string]string
-			artistAttr[0] = make(map[string]string)
-			artistAttr[0]["value"] = track.Artist.Name
-			result.Set("artistAttr", artistAttr)
-			uriTail := track.Artist.Name + "/" + track.Album.Title + "/" + track.Title
-			result.SetURI(track.Link)
+			result.Set("type", "artist")
+			result.Set("id", artist.Id)
+			result.SetArt(artist.Picture)
+			result.SetTitle(artist.Name)
+			uriTail := artist.Name
+			result.SetURI(artist.Link)
 			result.SetDndURI("http://localhost_dndrui/" + uriTail)
-
+			var attributes [2]map[string]string
+			attributes[0] = make(map[string]string)
+			attributes[0]["value"] = strconv.Itoa(artist.Nb_album)
+			attributes[0]["icon"] = s.base.ScopeDirectory() + "/album.svg"
+			attributes[1] = make(map[string]string)
+			attributes[1]["value"] = strconv.Itoa(artist.Nb_fan)
+			attributes[1]["icon"] = "image://theme/starred"
+			result.Set("attributes", attributes)
 			err = reply.Push(result)
 			if err != nil {
-				log.Println("Deezer: Search: err: ", err)
+				log.Println("Deezer: SearchQuery: err: ", err)
 				return err
 			}
 		}
-		if !isAggregated {
-			var artists, err2 = QueryArtists(queryString)
-			if err2 != nil {
-				log.Println("Deezer: Search: err: ", err2)
-				return err2
-			}
-			category = reply.RegisterCategory("query_artist", gettext.Gettext("Found artists"), "", artistCategoryTemplate)
-			for _, artist := range artists {
-				result := scopes.NewCategorisedResult(category)
-				result.Set("type", "artist")
-				result.Set("id", artist.Id)
-				result.SetArt(artist.Picture)
-				result.SetTitle(artist.Name)
-				uriTail := artist.Name
-				result.SetURI(artist.Link)
-				result.SetDndURI("http://localhost_dndrui/" + uriTail)
-				var attributes [2]map[string]string
-				attributes[0] = make(map[string]string)
-				attributes[0]["value"] = strconv.Itoa(artist.Nb_album)
-				attributes[0]["icon"] = s.base.ScopeDirectory() + "/album.svg"
-				attributes[1] = make(map[string]string)
-				attributes[1]["value"] = strconv.Itoa(artist.Nb_fan)
-				attributes[1]["icon"] = "image://theme/starred"
-				result.Set("attributes", attributes)
-				err = reply.Push(result)
-				if err != nil {
-					log.Println("Deezer: Search: err: ", err)
-					return err
-				}
-			}
-			var albums, err3 = QueryAlbums(queryString)
-			if err3 != nil {
-				log.Println("Deezer: Search: err: ", err3)
-				return err3
-			}
-			category = reply.RegisterCategory("query_album", gettext.Gettext("Found albums"), "", albumCategoryTemplate)
-			for _, album := range albums {
-				result := scopes.NewCategorisedResult(category)
-				result.Set("type", "album")
-				result.Set("id", album.Id)
-				result.SetArt(album.Cover)
-				result.SetTitle(album.Title)
-				result.Set("artist", album.Artist.Name)
-				uriTail := album.Artist.Name + "/" + album.Title
-				result.SetURI(album.Link)
-				result.SetDndURI("http://localhost_dndrui/" + uriTail)
-				var attributes [1]map[string]string
-				attributes[0] = make(map[string]string)
-				attributes[0]["value"] = strconv.Itoa(album.Nb_tracks)
-				attributes[0]["icon"] = "image://theme/stock_music"
-				result.Set("attributes", attributes)
-				err = reply.Push(result)
-				if err != nil {
-					log.Println("Deezer: Search: err: ", err)
-					return err
-				}
-			}
+		var albums, err3 = QueryAlbums(queryString)
+		if err3 != nil {
+			log.Println("Deezer: SearchQuery: err: ", err3)
+			return err3
 		}
-	} else {
-		// Surfacing mode
-		log.Println("Deezer: Search: Surfacing")
-		accessToken := ""
-		/*TODO:*/
-		services := s.Accounts.EnabledServices()
-		log.Printf("Deezer: Number of enabled services: %v\n", len(services))
-		if len(services) > 0 {
-			service := services[0]
-			log.Printf("Deezer: Service: %#v\n", service)
-			// If the service is in an error state, try
-			// and refresh it.
-			if service.Error != nil {
-				service = s.Accounts.Refresh(service.AccountId, false)
-				log.Printf("Deezer: Refreshed: %#v\n", service)
-			}
-			if service.Error == nil {
-				accessToken = service.AccessToken
-			}
-		}
-		/**/
-
-		if accessToken != "" {
-			log.Println("Deezer: Search: Account")
-			var tracks, err = QueryRecommendedTracks(accessToken)
+		category = reply.RegisterCategory("query_album", gettext.Gettext("Found albums"), "", albumCategoryTemplate)
+		for _, album := range albums {
+			result := scopes.NewCategorisedResult(category)
+			result.Set("type", "album")
+			result.Set("id", album.Id)
+			result.SetArt(album.Cover)
+			result.SetTitle(album.Title)
+			result.Set("artist", album.Artist.Name)
+			uriTail := album.Artist.Name + "/" + album.Title
+			result.SetURI(album.Link)
+			result.SetDndURI("http://localhost_dndrui/" + uriTail)
+			var attributes [1]map[string]string
+			attributes[0] = make(map[string]string)
+			attributes[0]["value"] = strconv.Itoa(album.Nb_tracks)
+			attributes[0]["icon"] = "image://theme/stock_music"
+			result.Set("attributes", attributes)
+			err = reply.Push(result)
 			if err != nil {
-				log.Println("Deezer: Search: err: ", err)
+				log.Println("Deezer: SearchQuery: err: ", err)
 				return err
-			}
-			category := reply.RegisterCategory("query_track", gettext.Gettext("Found tracks"), "", trackCategoryTemplate)
-			for _, track := range tracks {
-				result := scopes.NewCategorisedResult(category)
-				result.Set("type", "track")
-				result.Set("id", track.Id)
-				result.SetArt(track.Album.Cover)
-				result.SetTitle(track.Title)
-				result.Set("album", track.Album.Title)
-				result.Set("artist", track.Artist.Name)
-				var artistAttr [1]map[string]string
-				artistAttr[0] = make(map[string]string)
-				artistAttr[0]["value"] = track.Artist.Name
-				result.Set("artistAttr", artistAttr)
-				uriTail := track.Artist.Name + "/" + track.Album.Title + "/" + track.Title
-				result.SetURI(track.Link)
-				result.SetDndURI("http://localhost_dndrui/" + uriTail)
-
-				err = reply.Push(result)
-				if err != nil {
-					log.Println("Deezer: Search: err: ", err)
-					return err
-				}
-			}
-			var artists, err2 = QueryRecommendedArtists(accessToken)
-			if err2 != nil {
-				log.Println("Deezer: Search: err: ", err2)
-				return err2
-			}
-			category = reply.RegisterCategory("query_artist", gettext.Gettext("Found artists"), "", artistCategoryTemplate)
-			for _, artist := range artists {
-				result := scopes.NewCategorisedResult(category)
-				result.Set("type", "artist")
-				result.Set("id", artist.Id)
-				result.SetArt(artist.Picture)
-				result.SetTitle(artist.Name)
-				uriTail := artist.Name
-				result.SetURI(artist.Link)
-				result.SetDndURI("http://localhost_dndrui/" + uriTail)
-				var attributes [2]map[string]string
-				attributes[0] = make(map[string]string)
-				attributes[0]["value"] = strconv.Itoa(artist.Nb_album)
-				attributes[0]["icon"] = s.base.ScopeDirectory() + "/album.svg"
-				attributes[1] = make(map[string]string)
-				attributes[1]["value"] = strconv.Itoa(artist.Nb_fan)
-				attributes[1]["icon"] = "image://theme/starred"
-				result.Set("attributes", attributes)
-				err = reply.Push(result)
-				if err != nil {
-					log.Println("Deezer: Search: err: ", err)
-					return err
-				}
-			}
-			var albums, err3 = QueryRecommendedAlbums(accessToken)
-			if err3 != nil {
-				log.Println("Deezer: Search: err: ", err3)
-				return err3
-			}
-			category = reply.RegisterCategory("query_album", gettext.Gettext("Found albums"), "", albumCategoryTemplate)
-			for _, album := range albums {
-				result := scopes.NewCategorisedResult(category)
-				result.Set("type", "album")
-				result.Set("id", album.Id)
-				result.SetArt(album.Cover)
-				result.SetTitle(album.Title)
-				result.Set("artist", album.Artist.Name)
-				uriTail := album.Artist.Name + "/" + album.Title
-				result.SetURI(album.Link)
-				result.SetDndURI("http://localhost_dndrui/" + uriTail)
-				var attributes [1]map[string]string
-				attributes[0] = make(map[string]string)
-				attributes[0]["value"] = strconv.Itoa(album.Nb_tracks)
-				attributes[0]["icon"] = "image://theme/stock_music"
-				result.Set("attributes", attributes)
-				err = reply.Push(result)
-				if err != nil {
-					log.Println("Deezer: Search: err: ", err)
-					return err
-				}
-			}
-		} else {
-			log.Println("Deezer: Search: No account")
-			var genreIdStr string
-			if !isAggregated {
-				root_department := s.CreateDepartments(query, metadata, reply)
-				reply.RegisterDepartments(root_department)
-
-				if query.DepartmentID() == "" {
-					genreIdStr = "0"
-				} else {
-					genreIdStr = query.DepartmentID()
-				}
-				log.Println("Deezer: Search: genre: ", genreIdStr)
-				// Not logged in, so add nag
-				cat := reply.RegisterCategory("nag", "", "", loginNagTemplate)
-				result := scopes.NewCategorisedResult(cat)
-				result.SetTitle(gettext.Gettext("Log in to Deezer"))
-				reg_err := scopes.RegisterAccountLoginResult(result, query, "deezer-scope.labsin_deezer-scope", "deezer-scope.labsin_deezer-scope", "deezer-scope.labsin_account", scopes.PostLoginInvalidateResults, scopes.PostLoginDoNothing)
-				if reg_err != nil {
-					log.Println("Deezer: Search: RegisterAccountLoginResult err: ", reg_err)
-					//Not fatal return reg_err
-				} else {
-					var rep_err = reply.Push(result)
-					if rep_err != nil {
-						log.Println("Deezer: Search: RegisterAccountLoginResult push err: ", reg_err)
-						//Not fatal return rep_err
-					}
-				}
-			} else {
-				genreIdStr = "0"
-			}
-
-			var artists, err = GetArtistsFromGenre(genreIdStr)
-			if err != nil {
-				//TODO
-				//err2 := reply.PushSurfacingResultsFromCache()
-				//if err2 != nil {
-				//	return err2
-				//}
-				log.Println("Deezer: Search: err: ", err)
-				return err
-			}
-			category := reply.RegisterCategory("artists", gettext.Gettext("Artists"), "", artistFromGenreCategoryTemplate)
-			for _, artist := range artists {
-				result := scopes.NewCategorisedResult(category)
-				result.Set("type", "artist")
-				result.Set("id", artist.Id)
-				result.SetArt(artist.Picture)
-				result.SetTitle(artist.Name)
-				uriTail := artist.Name
-				result.SetURI(artist.Link)
-				result.SetDndURI("http://localhost_dndrui/" + uriTail)
-				err = reply.Push(result)
-				if err != nil {
-					log.Println("Deezer: Search: err: ", err)
-					return err
-				}
 			}
 		}
 	}
 	return nil
 }
 
-func (s *DeezerScope) CreateDepartments(query *scopes.CannedQuery, metadata *scopes.SearchMetadata, reply *scopes.SearchReply) *scopes.Department {
-	department, _ := scopes.NewDepartment("", query, gettext.Gettext("Browse Music"))
-	department.SetAlternateLabel(gettext.Gettext("Browse All Music"))
+func (s *DeezerScope) SearchSurfacingRecomendations(query *scopes.CannedQuery, metadata *scopes.SearchMetadata, reply *scopes.SearchReply, cancelled <-chan bool) error {
+	log.Println("Deezer: SearchSurfacingRecomendations")
+	var tracks, err = QueryRecommendedTracks()
+	if err != nil {
+		log.Println("Deezer: SearchSurfacingRecomendations: err: ", err)
+		return err
+	}
+	category := reply.RegisterCategory("query_track", gettext.Gettext("Recommended tracks"), "", trackCategoryTemplate)
+	for _, track := range tracks {
+		result := scopes.NewCategorisedResult(category)
+		result.Set("type", "track")
+		result.Set("id", track.Id)
+		result.SetArt(track.Album.Cover)
+		result.SetTitle(track.Title)
+		result.Set("album", track.Album.Title)
+		result.Set("artist", track.Artist.Name)
+		var artistAttr [1]map[string]string
+		artistAttr[0] = make(map[string]string)
+		artistAttr[0]["value"] = track.Artist.Name
+		result.Set("artistAttr", artistAttr)
+		uriTail := track.Artist.Name + "/" + track.Album.Title + "/" + track.Title
+		result.SetURI(track.Link)
+		result.SetDndURI("http://localhost_dndrui/" + uriTail)
+
+		err = reply.Push(result)
+		if err != nil {
+			log.Println("Deezer: SearchSurfacingRecomendations: err: ", err)
+			return err
+		}
+	}
+	var artists, err2 = QueryRecommendedArtists()
+	if err2 != nil {
+		log.Println("Deezer: SearchSurfacingRecomendations: err: ", err2)
+		return err2
+	}
+	category = reply.RegisterCategory("query_artist", gettext.Gettext("Recommended artists"), "", artistCategoryTemplate)
+	for _, artist := range artists {
+		result := scopes.NewCategorisedResult(category)
+		result.Set("type", "artist")
+		result.Set("id", artist.Id)
+		result.SetArt(artist.Picture)
+		result.SetTitle(artist.Name)
+		uriTail := artist.Name
+		result.SetURI(artist.Link)
+		result.SetDndURI("http://localhost_dndrui/" + uriTail)
+		var attributes [2]map[string]string
+		attributes[0] = make(map[string]string)
+		attributes[0]["value"] = strconv.Itoa(artist.Nb_album)
+		attributes[0]["icon"] = s.base.ScopeDirectory() + "/album.svg"
+		attributes[1] = make(map[string]string)
+		attributes[1]["value"] = strconv.Itoa(artist.Nb_fan)
+		attributes[1]["icon"] = "image://theme/starred"
+		result.Set("attributes", attributes)
+		err = reply.Push(result)
+		if err != nil {
+			log.Println("Deezer: SearchSurfacingRecomendations: err: ", err)
+			return err
+		}
+	}
+	var albums, err3 = QueryRecommendedAlbums()
+	if err3 != nil {
+		log.Println("Deezer: SearchSurfacingRecomendations: err: ", err3)
+		return err3
+	}
+	category = reply.RegisterCategory("query_album", gettext.Gettext("Recommended albums"), "", albumCategoryTemplate)
+	for _, album := range albums {
+		result := scopes.NewCategorisedResult(category)
+		result.Set("type", "album")
+		result.Set("id", album.Id)
+		result.SetArt(album.Cover)
+		result.SetTitle(album.Title)
+		result.Set("artist", album.Artist.Name)
+		uriTail := album.Artist.Name + "/" + album.Title
+		result.SetURI(album.Link)
+		result.SetDndURI("http://localhost_dndrui/" + uriTail)
+		var attributes [1]map[string]string
+		attributes[0] = make(map[string]string)
+		attributes[0]["value"] = strconv.Itoa(album.Nb_tracks)
+		attributes[0]["icon"] = "image://theme/stock_music"
+		result.Set("attributes", attributes)
+		err = reply.Push(result)
+		if err != nil {
+			log.Println("Deezer: SearchSurfacingRecomendations: err: ", err)
+			return err
+		}
+	}
+	return nil
+}
+
+func (s *DeezerScope) SearchSurfacingHistory(query *scopes.CannedQuery, metadata *scopes.SearchMetadata, reply *scopes.SearchReply, cancelled <-chan bool) error {
+	log.Println("Deezer: SearchSurfacingHistory")
+	var tracks, err = QueryHistoryTracks()
+	if err != nil {
+		log.Println("Deezer: SearchSurfacingHistory: err: ", err)
+		return err
+	}
+	category := reply.RegisterCategory("query_track", gettext.Gettext("My history"), "", trackCategoryTemplate)
+	for _, track := range tracks {
+		result := scopes.NewCategorisedResult(category)
+		result.Set("type", "track")
+		result.Set("id", track.Id)
+		result.SetArt(track.Album.Cover)
+		result.SetTitle(track.Title)
+		result.Set("album", track.Album.Title)
+		result.Set("artist", track.Artist.Name)
+		var artistAttr [1]map[string]string
+		artistAttr[0] = make(map[string]string)
+		artistAttr[0]["value"] = track.Artist.Name
+		result.Set("artistAttr", artistAttr)
+		uriTail := track.Artist.Name + "/" + track.Album.Title + "/" + track.Title
+		result.SetURI(track.Link)
+		result.SetDndURI("http://localhost_dndrui/" + uriTail)
+
+		err = reply.Push(result)
+		if err != nil {
+			log.Println("Deezer: SearchSurfacingHistory: err: ", err)
+			return err
+		}
+	}
+	return nil
+}
+
+func (s *DeezerScope) SearchSurfacingMy25(query *scopes.CannedQuery, metadata *scopes.SearchMetadata, reply *scopes.SearchReply, cancelled <-chan bool) error {
+	log.Println("Deezer: SearchSurfacingMy25")
+	var tracks, err = QueryMy25Tracks()
+	if err != nil {
+		log.Println("Deezer: SearchSurfacingMy25: err: ", err)
+		return err
+	}
+	category := reply.RegisterCategory("query_track", gettext.Gettext("My 25 top tracks"), "", trackCategoryTemplate)
+	for _, track := range tracks {
+		result := scopes.NewCategorisedResult(category)
+		result.Set("type", "track")
+		result.Set("id", track.Id)
+		result.SetArt(track.Album.Cover)
+		result.SetTitle(track.Title)
+		result.Set("album", track.Album.Title)
+		result.Set("artist", track.Artist.Name)
+		var artistAttr [1]map[string]string
+		artistAttr[0] = make(map[string]string)
+		artistAttr[0]["value"] = track.Artist.Name
+		result.Set("artistAttr", artistAttr)
+		uriTail := track.Artist.Name + "/" + track.Album.Title + "/" + track.Title
+		result.SetURI(track.Link)
+		result.SetDndURI("http://localhost_dndrui/" + uriTail)
+
+		err = reply.Push(result)
+		if err != nil {
+			log.Println("Deezer: SearchSurfacingMy25: err: ", err)
+			return err
+		}
+	}
+	return nil
+}
+
+func (s *DeezerScope) SearchSurfacingGenre(query *scopes.CannedQuery, metadata *scopes.SearchMetadata, reply *scopes.SearchReply, cancelled <-chan bool, genreIdStr string) error {
+	log.Println("Deezer: SearchSurfacingGenre: ", genreIdStr)
+	var artists, err = GetArtistsFromGenre(genreIdStr)
+	if err != nil {
+		//TODO
+		//err2 := reply.PushSurfacingResultsFromCache()
+		//if err2 != nil {
+		//	return err2
+		//}
+		log.Println("Deezer: SearchSurfacingGenre: err: ", err)
+		return err
+	}
+	category := reply.RegisterCategory("artists", gettext.Gettext("Artists"), "", artistFromGenreCategoryTemplate)
+	for _, artist := range artists {
+		result := scopes.NewCategorisedResult(category)
+		result.Set("type", "artist")
+		result.Set("id", artist.Id)
+		result.SetArt(artist.Picture)
+		result.SetTitle(artist.Name)
+		uriTail := artist.Name
+		result.SetURI(artist.Link)
+		result.SetDndURI("http://localhost_dndrui/" + uriTail)
+		err = reply.Push(result)
+		if err != nil {
+			log.Println("Deezer: SearchSurfacingGenre: err: ", err)
+			return err
+		}
+	}
+	return nil
+}
+
+func (s *DeezerScope) SearchSurfacing(query *scopes.CannedQuery, metadata *scopes.SearchMetadata, reply *scopes.SearchReply, cancelled <-chan bool) error {
+	log.Println("Deezer: SearchSurfacing")
+
+	var isAggregated bool = metadata.IsAggregated()
+	var queryType = "genre"
+	var genreIdStr = "0"
+
+	if !isAggregated {
+		s.RegisterDepartments(query, metadata, reply)
+
+		if query.DepartmentID() == "" {
+			if settings.HasAccess() {
+				queryType = "recomendations"
+			} else {
+				genreIdStr = "0"
+			}
+		} else if strings.HasPrefix(query.DepartmentID(), "genre_") {
+			genreIdStr = query.DepartmentID()[6:len(query.DepartmentID())]
+		} else {
+			queryType = query.DepartmentID()
+		}
+
+		if !settings.HasAccess() {
+			cat := reply.RegisterCategory("nag", "", "", loginNagTemplate)
+			result := scopes.NewCategorisedResult(cat)
+			result.SetTitle(gettext.Gettext("Log in to Deezer"))
+			reg_err := scopes.RegisterAccountLoginResult(result, query, "deezer-scope.labsin_deezer-scope", "deezer-scope.labsin_deezer-scope", "deezer-scope.labsin_account", scopes.PostLoginInvalidateResults, scopes.PostLoginDoNothing)
+			if reg_err != nil {
+				log.Println("Deezer: Search: RegisterAccountLoginResult err: ", reg_err)
+				//Not fatal return reg_err
+			} else {
+				var rep_err = reply.Push(result)
+				if rep_err != nil {
+					log.Println("Deezer: Search: RegisterAccountLoginResult push err: ", reg_err)
+					//Not fatal return rep_err
+				}
+			}
+		}
+	}
+
+	switch queryType {
+	case "recomendations":
+		return s.SearchSurfacingRecomendations(query, metadata, reply, cancelled)
+	case "history":
+		return s.SearchSurfacingHistory(query, metadata, reply, cancelled)
+	case "my25":
+		return s.SearchSurfacingMy25(query, metadata, reply, cancelled)
+	case "genre":
+		return s.SearchSurfacingGenre(query, metadata, reply, cancelled, genreIdStr)
+	default:
+		break
+	}
+
+	return nil
+}
+
+func (s *DeezerScope) Search(query *scopes.CannedQuery, metadata *scopes.SearchMetadata, reply *scopes.SearchReply, cancelled <-chan bool) error {
+	s.SetGlobalSettings()
+
+	var queryString string = query.QueryString()
+	var isSurfacing bool = queryString == ""
+
+	if !isSurfacing {
+		return s.SearchQuery(query, metadata, reply, cancelled)
+	} else {
+		return s.SearchSurfacing(query, metadata, reply, cancelled)
+	}
+	return nil
+}
+
+func (s *DeezerScope) CreateGenreDepartments(query *scopes.CannedQuery, metadata *scopes.SearchMetadata, reply *scopes.SearchReply) *scopes.Department {
+	var genre_department *scopes.Department
+	var err error
+	if settings.HasAccess() {
+		genre_department, err = scopes.NewDepartment("genre_0", query, gettext.Gettext("Top Tracks"))
+	} else {
+		genre_department, err = scopes.NewDepartment("", query, gettext.Gettext("Top Tracks"))
+	}
+	if err != nil {
+		log.Println("Deezer: RegisterDepartments: ", err)
+	}
+	genre_department.SetAlternateLabel(gettext.Gettext("Show All Genres"))
 	for i, name := range genreName {
 		if i == 0 {
 			continue
 		}
-		cur_dep, _ := scopes.NewDepartment(strconv.Itoa(genreIds[i]), query, name)
-		department.AddSubdepartment(cur_dep)
+		cur_dep, _ := scopes.NewDepartment("genre_"+strconv.Itoa(genreIds[i]), query, name)
+		genre_department.AddSubdepartment(cur_dep)
 	}
-	return department
+	return genre_department
+}
+
+func (s *DeezerScope) RegisterDepartments(query *scopes.CannedQuery, metadata *scopes.SearchMetadata, reply *scopes.SearchReply) {
+	if settings.HasAccess() {
+		var err error
+		root_department, err := scopes.NewDepartment("", query, gettext.Gettext("Recomendations"))
+		if err != nil {
+			log.Println("Deezer: RegisterDepartments: ", err)
+		}
+		history_department, err := scopes.NewDepartment("history", query, gettext.Gettext("Play History"))
+		if err != nil {
+			log.Println("Deezer: RegisterDepartments: ", err)
+		}
+		my_department, err := scopes.NewDepartment("my25", query, gettext.Gettext("My 25"))
+		if err != nil {
+			log.Println("Deezer: RegisterDepartments: ", err)
+		}
+		genre_department := s.CreateGenreDepartments(query, metadata, reply)
+		root_department.AddSubdepartment(history_department)
+		root_department.AddSubdepartment(my_department)
+		root_department.AddSubdepartment(genre_department)
+		reply.RegisterDepartments(root_department)
+	} else {
+		reply.RegisterDepartments(s.CreateGenreDepartments(query, metadata, reply))
+	}
 }
 
 // MAIN ************************************************************************
@@ -713,12 +860,10 @@ func (s *DeezerScope) CreateDepartments(query *scopes.CannedQuery, metadata *sco
 func main() {
 	log.Println("Deezer: main")
 
-	/*TODO:*/
-	watcher := accounts.NewWatcher("deezer-scope.labsin_deezer-scope", []string{"deezer-scope.labsin_account"})
+	watcher := accounts.NewWatcher("deezer-scope.labsin_deezer-scope", nil)
 	watcher.Settle() /**/
 	scope := &DeezerScope{
 		ClientId: "172955",
-		//TODO: Accounts: watcher,
 		Accounts: watcher,
 	}
 	if err := scopes.Run(scope); err != nil {

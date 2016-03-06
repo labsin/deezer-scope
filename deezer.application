@@ -2,7 +2,7 @@
 <application>
   <desktop-entry>deezer-scope.labsin_deezer-scope</desktop-entry>
   <services>
-    <service id="deezer-scope.labisn_deezer-scope">
+    <service id="deezer-scope.labsin_deezer-scope">
       <description>Discover the Deezer database</description>
     </service>
   </services>

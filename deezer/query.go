@@ -85,6 +85,14 @@ type Genre struct {
 	Picture_big    string
 }
 
+type ErrorData struct {
+	Error struct {
+		Type    string
+		Message string
+		Code    int
+	}
+}
+
 func GetJSON(url string, data interface{}) error {
 	log.Println("Deezer: GetJSON: ", url)
 	resp, err := http.Get(url)
@@ -96,16 +104,40 @@ func GetJSON(url string, data interface{}) error {
 	if err2 != nil {
 		return err2
 	}
-	err3 := json.Unmarshal(body, data)
-	if err3 != nil {
-		return err3
+	var errorData ErrorData
+	err2 = json.Unmarshal(body, &errorData)
+	if err2 == nil {
+		if errorData.Error.Message != "" {
+			return errors.New(errorData.Error.Message)
+		}
+	}
+	err2 = json.Unmarshal(body, data)
+	if err2 != nil {
+		return err2
 	}
 	return nil
 }
 
+func DeezerGetJSON(path string, q url.Values, data interface{}) error {
+	log.Println("Deezer: DeezerGetJSON: ", path, " query: ", q)
+	u, err := url.Parse(settings.BaseURL + "/" + path)
+	if q == nil {
+		q = url.Values{}
+	}
+	if err != nil {
+		log.Println("Deezer: DeezerGetJSON: ", err)
+		return err
+	}
+	if settings.HasAccess() {
+		q.Set("access_token", settings.AccessToken)
+	}
+	u.RawQuery = q.Encode()
+	return GetJSON(u.String(), data)
+}
+
 func GetArtist(id int) (Artist, error) {
 	var artist Artist
-	err := GetJSON("http://api.deezer.com/artist/"+strconv.Itoa(id), &artist)
+	err := DeezerGetJSON("artist/"+strconv.Itoa(id), nil, &artist)
 	if err != nil {
 		return Artist{}, err
 	}
@@ -117,7 +149,7 @@ func GetArtistTop(id int) ([]Track, error) {
 		Data []Track
 	}
 	var data Data
-	err := GetJSON("http://api.deezer.com/artist/"+strconv.Itoa(id)+"/top?limit="+settings.LimitTracksAttribute, &data)
+	err := DeezerGetJSON("artist/"+strconv.Itoa(id)+"/top", url.Values{"limit": {settings.LimitTracksAttribute}}, &data)
 	if err != nil {
 		return nil, err
 	}
@@ -129,7 +161,7 @@ func GetArtistTop(id int) ([]Track, error) {
 
 func GetAlbum(id int) (Album, error) {
 	var album Album
-	err := GetJSON("http://api.deezer.com/album/"+strconv.Itoa(id), &album)
+	err := DeezerGetJSON("album/"+strconv.Itoa(id), nil, &album)
 	if err != nil {
 		return Album{}, err
 	}
@@ -138,7 +170,7 @@ func GetAlbum(id int) (Album, error) {
 
 func GetTrack(id int) (Track, error) {
 	var track Track
-	err := GetJSON("http://api.deezer.com/track/"+strconv.Itoa(id), &track)
+	err := DeezerGetJSON("track/"+strconv.Itoa(id), nil, &track)
 	if err != nil {
 		return Track{}, err
 	}
@@ -150,7 +182,7 @@ func GetArtistsFromGenre(genreId string) ([]Artist, error) {
 		Data []Artist
 	}
 	var data Data
-	err := GetJSON("http://api.deezer.com/genre/"+genreId+"/artists"+"?limit="+settings.LimitResultsAttribute, &data)
+	err := DeezerGetJSON("genre/"+genreId+"/artists", url.Values{"limit": {settings.LimitResultsAttribute}}, &data)
 	if err != nil {
 		return nil, err
 	}
@@ -166,7 +198,7 @@ func GetTracksFromAlbum(id int) ([]Track, error) {
 		Next string
 	}
 	var data Data
-	err := GetJSON("http://api.deezer.com/album/"+strconv.Itoa(id)+"/tracks?limit="+LimitTracks, &data)
+	err := DeezerGetJSON("album/"+strconv.Itoa(id)+"/tracks", url.Values{"limit": {LimitTracks}}, &data)
 	if err != nil {
 		return nil, err
 	}
@@ -182,7 +214,7 @@ func QueryTracks(query string) ([]Track, error) {
 		Data []Track
 	}
 	var data Data
-	err := GetJSON("http://api.deezer.com/search/track?q="+query+"&order="+settings.SortAttribute+"&limit="+settings.LimitResultsAttribute, &data)
+	err := DeezerGetJSON("search/track", url.Values{"q": {query}, "order": {settings.SortAttribute}, "limit": {settings.LimitResultsAttribute}}, &data)
 	if err != nil {
 		return nil, err
 	}
@@ -192,12 +224,42 @@ func QueryTracks(query string) ([]Track, error) {
 	return data.Data, nil
 }
 
-func QueryRecommendedTracks(token string) ([]Track, error) {
+func QueryRecommendedTracks() ([]Track, error) {
 	type Data struct {
 		Data []Track
 	}
 	var data Data
-	err := GetJSON("http://api.deezer.com/user/me/recommendations/tracks?access_token="+token, &data)
+	err := DeezerGetJSON("user/me/recommendations/tracks", nil, &data)
+	if err != nil {
+		return nil, err
+	}
+	if len(data.Data) == 0 {
+		return data.Data, errors.New("Empty response")
+	}
+	return data.Data, nil
+}
+
+func QueryHistoryTracks() ([]Track, error) {
+	type Data struct {
+		Data []Track
+	}
+	var data Data
+	err := DeezerGetJSON("user/me/history", nil, &data)
+	if err != nil {
+		return nil, err
+	}
+	if len(data.Data) == 0 {
+		return data.Data, errors.New("Empty response")
+	}
+	return data.Data, nil
+}
+
+func QueryMy25Tracks() ([]Track, error) {
+	type Data struct {
+		Data []Track
+	}
+	var data Data
+	err := DeezerGetJSON("user/me/charts", nil, &data)
 	if err != nil {
 		return nil, err
 	}
@@ -213,7 +275,7 @@ func QueryArtists(query string) ([]Artist, error) {
 		Data []Artist
 	}
 	var data Data
-	err := GetJSON("http://api.deezer.com/search/artist?q="+query+"&order="+settings.SortAttribute+"&limit="+settings.LimitResultsAttribute, &data)
+	err := DeezerGetJSON("search/artist", url.Values{"q": {query}, "order": {settings.SortAttribute}, "limit": {settings.LimitResultsAttribute}}, &data)
 	if err != nil {
 		return nil, err
 	}
@@ -223,12 +285,12 @@ func QueryArtists(query string) ([]Artist, error) {
 	return data.Data, nil
 }
 
-func QueryRecommendedArtists(token string) ([]Artist, error) {
+func QueryRecommendedArtists() ([]Artist, error) {
 	type Data struct {
 		Data []Artist
 	}
 	var data Data
-	err := GetJSON("http://api.deezer.com/user/me/recommendations/artists?access_token="+token, &data)
+	err := DeezerGetJSON("user/me/recommendations/artists", nil, &data)
 	if err != nil {
 		return nil, err
 	}
@@ -244,7 +306,7 @@ func QueryAlbums(query string) ([]Album, error) {
 		Data []Album
 	}
 	var data Data
-	err := GetJSON("http://api.deezer.com/search/album?q="+query+"&order="+settings.SortAttribute+"&limit="+settings.LimitResultsAttribute, &data)
+	err := DeezerGetJSON("search/album", url.Values{"q": {query}, "order": {settings.SortAttribute}, "limit": {settings.LimitResultsAttribute}}, &data)
 	if err != nil {
 		return nil, err
 	}
@@ -254,12 +316,12 @@ func QueryAlbums(query string) ([]Album, error) {
 	return data.Data, nil
 }
 
-func QueryRecommendedAlbums(token string) ([]Album, error) {
+func QueryRecommendedAlbums() ([]Album, error) {
 	type Data struct {
 		Data []Album
 	}
 	var data Data
-	err := GetJSON("http://api.deezer.com/user/me/recommendations/albums?access_token="+token, &data)
+	err := DeezerGetJSON("user/me/recommendations/albums", nil, &data)
 	if err != nil {
 		return nil, err
 	}
