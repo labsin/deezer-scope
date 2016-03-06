@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: deezer-scope 0.1\n"
 "Report-Msgid-Bugs-To: sam.sgrs@gmail.com\n"
-"POT-Creation-Date: 2016-02-29 18:59+0100\n"
+"POT-Creation-Date: 2016-03-06 23:49+0100\n"
 "PO-Revision-Date: 2016-02-29 18:19+0100\n"
 "Last-Translator: Emanuele Antonio Faraone <emanueleant03@gmail.com>\n"
 "Language-Team: Italian <LL@li.org>\n"
@@ -18,165 +18,201 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. TRANSLATORS: Genre as department
-#: ../deezer/deezer-scope.go:121
+#: ../deezer/deezer-scope.go:122
 msgid "All"
 msgstr "Tutti"
 
 #. TRANSLATORS: Genre as department
-#: ../deezer/deezer-scope.go:123
+#: ../deezer/deezer-scope.go:124
 msgid "Pop"
 msgstr "Pop"
 
 #. TRANSLATORS: Genre as department
-#: ../deezer/deezer-scope.go:125
+#: ../deezer/deezer-scope.go:126
 msgid "Rap/Hip Hop"
 msgstr "Rap/Hip Hop"
 
 #. TRANSLATORS: Genre as department
-#: ../deezer/deezer-scope.go:127
+#: ../deezer/deezer-scope.go:128
 msgid "Rock"
 msgstr "Rock"
 
 #. TRANSLATORS: Genre as department
-#: ../deezer/deezer-scope.go:129
+#: ../deezer/deezer-scope.go:130
 msgid "Dance"
 msgstr "Dance"
 
 #. TRANSLATORS: Genre as department
-#: ../deezer/deezer-scope.go:131
+#: ../deezer/deezer-scope.go:132
 msgid "R&B/Soul/Funk"
 msgstr "R&B/soul/funk"
 
 #. TRANSLATORS: Genre as department
-#: ../deezer/deezer-scope.go:133
+#: ../deezer/deezer-scope.go:134
 msgid "Alternative"
 msgstr "Alternativa"
 
 #. TRANSLATORS: Genre as department
-#: ../deezer/deezer-scope.go:135
+#: ../deezer/deezer-scope.go:136
 msgid "Electro"
 msgstr "Elettronica"
 
 #. TRANSLATORS: Genre as department
-#: ../deezer/deezer-scope.go:137
+#: ../deezer/deezer-scope.go:138
 msgid "Folk"
 msgstr "Folk"
 
 #. TRANSLATORS: Genre as department
-#: ../deezer/deezer-scope.go:139
+#: ../deezer/deezer-scope.go:140
 msgid "Reggae"
 msgstr "Reggae"
 
 #. TRANSLATORS: Genre as department
-#: ../deezer/deezer-scope.go:141
+#: ../deezer/deezer-scope.go:142
 msgid "Jazz"
 msgstr "Jazz"
 
 #. TRANSLATORS: Genre as department
-#: ../deezer/deezer-scope.go:143
+#: ../deezer/deezer-scope.go:144
 msgid "French Chanson"
 msgstr "Canzoni popolari francesi"
 
 #. TRANSLATORS: Genre as department
-#: ../deezer/deezer-scope.go:145
+#: ../deezer/deezer-scope.go:146
 msgid "Classical"
 msgstr "Classica"
 
 #. TRANSLATORS: Genre as department
-#: ../deezer/deezer-scope.go:147
+#: ../deezer/deezer-scope.go:148
 msgid "Films/Games"
 msgstr "Film/Giochi"
 
 #. TRANSLATORS: Genre as department
-#: ../deezer/deezer-scope.go:149
+#: ../deezer/deezer-scope.go:150
 msgid "Metal"
 msgstr "Metal"
 
 #. TRANSLATORS: Genre as department
-#: ../deezer/deezer-scope.go:151
+#: ../deezer/deezer-scope.go:152
 msgid "African Music"
 msgstr "Musica Africana"
 
 #. TRANSLATORS: Genre as department
-#: ../deezer/deezer-scope.go:153
+#: ../deezer/deezer-scope.go:154
 msgid "Arabic Music"
 msgstr "Musica Araba"
 
 #. TRANSLATORS: Genre as department
-#: ../deezer/deezer-scope.go:155
+#: ../deezer/deezer-scope.go:156
 msgid "Asian Music"
 msgstr "Musica Asiatica"
 
 #. TRANSLATORS: Genre as department
-#: ../deezer/deezer-scope.go:157
+#: ../deezer/deezer-scope.go:158
 msgid "Blues"
 msgstr "Blues"
 
 #. TRANSLATORS: Genre as department
-#: ../deezer/deezer-scope.go:159
+#: ../deezer/deezer-scope.go:160
 msgid "Brazilian Music"
 msgstr "Musica Brasiliana"
 
 #. TRANSLATORS: Genre as department
-#: ../deezer/deezer-scope.go:161
+#: ../deezer/deezer-scope.go:162
 msgid "German Music"
 msgstr "Musica Tedesca"
 
 #. TRANSLATORS: Genre as department
-#: ../deezer/deezer-scope.go:163
+#: ../deezer/deezer-scope.go:164
 msgid "Indian Music"
 msgstr "Musica Indiana"
 
 #. TRANSLATORS: Genre as department
-#: ../deezer/deezer-scope.go:165
+#: ../deezer/deezer-scope.go:166
 msgid "Kids"
 msgstr "Bambini"
 
 #. TRANSLATORS: Genre as department
-#: ../deezer/deezer-scope.go:167
+#: ../deezer/deezer-scope.go:168
 msgid "Latin Music"
 msgstr "Musica Latina"
 
-#: ../deezer/deezer-scope.go:281 ../deezer/deezer-scope.go:320
+#: ../deezer/deezer-scope.go:311 ../deezer/deezer-scope.go:350
 msgid "Released on "
 msgstr "Rilasciato il"
 
-#: ../deezer/deezer-scope.go:283 ../deezer/deezer-scope.go:322
+#: ../deezer/deezer-scope.go:313 ../deezer/deezer-scope.go:352
 msgid "Duration of "
 msgstr "Durato per"
 
-#: ../deezer/deezer-scope.go:289 ../deezer/deezer-scope.go:328
-#: ../deezer/deezer-scope.go:404
+#: ../deezer/deezer-scope.go:319 ../deezer/deezer-scope.go:358
+#: ../deezer/deezer-scope.go:434
 msgid "Link"
 msgstr "Link"
 
-#: ../deezer/deezer-scope.go:446 ../deezer/deezer-scope.go:556
+#: ../deezer/deezer-scope.go:471
 msgid "Found tracks"
 msgstr "Cerca Traccia"
 
-#: ../deezer/deezer-scope.go:475 ../deezer/deezer-scope.go:584
+#: ../deezer/deezer-scope.go:500
 msgid "Found artists"
 msgstr "Cerca Artista"
 
-#: ../deezer/deezer-scope.go:504 ../deezer/deezer-scope.go:613
+#: ../deezer/deezer-scope.go:529
 msgid "Found albums"
 msgstr "Cerca Album"
 
-#: ../deezer/deezer-scope.go:651
-msgid "Log in to Deezer"
-msgstr "Entra in Deezer"
+#: ../deezer/deezer-scope.go:562
+#, fuzzy
+msgid "Recommended tracks"
+msgstr "Cerca Traccia"
 
-#: ../deezer/deezer-scope.go:677
+#: ../deezer/deezer-scope.go:590
+#, fuzzy
+msgid "Recommended artists"
+msgstr "Cerca Artista"
+
+#: ../deezer/deezer-scope.go:619
+#, fuzzy
+msgid "Recommended albums"
+msgstr "Cerca Album"
+
+#: ../deezer/deezer-scope.go:651
+msgid "My history"
+msgstr ""
+
+#: ../deezer/deezer-scope.go:684
+msgid "My 25 top tracks"
+msgstr ""
+
+#: ../deezer/deezer-scope.go:722
 msgid "Artists"
 msgstr "Artisti"
 
-#: ../deezer/deezer-scope.go:699
-msgid "Browse Music"
-msgstr "Naviga nella Musica"
+#: ../deezer/deezer-scope.go:766
+msgid "Log in to Deezer"
+msgstr "Entra in Deezer"
 
-#: ../deezer/deezer-scope.go:700
-msgid "Browse All Music"
-msgstr "Guarda tutte le canzoni"
+#: ../deezer/deezer-scope.go:815 ../deezer/deezer-scope.go:817
+#, fuzzy
+msgid "Top Tracks"
+msgstr "Cerca Traccia"
+
+#: ../deezer/deezer-scope.go:822
+msgid "Show All Genres"
+msgstr ""
+
+#: ../deezer/deezer-scope.go:836
+msgid "Recomendations"
+msgstr ""
+
+#: ../deezer/deezer-scope.go:840
+msgid "Play History"
+msgstr ""
+
+#: ../deezer/deezer-scope.go:844
+msgid "My 25"
+msgstr ""
 
 #. Scope overview SearchHint
 #: deezer-scope.labsin_deezer-scope.ini.in.h:2
@@ -232,7 +268,7 @@ msgid ""
 "&#13; Search mode searches for tracks, artists and albums.&#10;&#13; "
 "Advanced searches can also be performed with:&#10;&#13; 'artist: &lt;artist "
 "name&gt;'&#10;&#13; 'album: &lt;album name&gt;'&#10;&#13; 'track: &lt;track "
-"name&gt;'&#10;&#13; 'label: &lt;lable name&gt;'&#10;&#13; 'dur_min: &lt;"
+"name&gt;'&#10;&#13; 'label: &lt;label name&gt;'&#10;&#13; 'dur_min: &lt;"
 "minimum duration in sec&gt;'&#10;&#13; 'dur_max: &lt;maximum duration in "
 "sec&gt;'&#10;&#13; 'bpm_min &lt;minimum bpm&gt;'&#10;&#13; 'bpm_max &lt;"
 "maximum bpm&gt;'&#10;&#13;&#10;&#13; The sorting can be set in the settings."
@@ -261,3 +297,9 @@ msgstr ""
 #: myapps.xml.in.h:8
 msgid "deezer, music, stream, discover, scope"
 msgstr "Deezer, musica, stream, esplora, scope"
+
+#~ msgid "Browse Music"
+#~ msgstr "Naviga nella Musica"
+
+#~ msgid "Browse All Music"
+#~ msgstr "Guarda tutte le canzoni"

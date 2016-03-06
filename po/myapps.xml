@@ -17,7 +17,7 @@ Advanced searches can also be performed with:
 'artist: <artist name>'
 'album: <album name>'
 'track: <track name>'
-'label: <lable name>'
+'label: <label name>'
 'dur_min: <minimum duration in sec>'
 'dur_max: <maximum duration in sec>'
 'bpm_min <minimum bpm>'
@@ -33,29 +33,6 @@ Emanuele Antonio Faraone (it)
 Feel free to contact me for translations.
 
 !!This app is in no way affiliated with www.deezer.com.!!</entry>
-<entry xml:lang="nl">Ontdek het ruime aanbod muziek in de Deezer databank. Je kan info bezien en previews beluisteren van de weide collectie muziek op Deezer.
-In Surfacing modus kan je nieuwe artisten ontdekken per genre.
-
-In zoek modus kan je naar nummers, artisten en albums zoken.
-Er zijn ook geavenceerde zoektermen:
-'artist: <naam>'
-'album: <naam>'
-'track: <naam>'
-'label: <naam>'
-'dur_min: <minimum aantal seconden>'
-'dur_max: <maximum aantal seconden>'
-'bpm_min <min bpm>'
-'bpm_max <max bpm>'
-
-Het sorteren van de resultaten kan worden ingesteld in de scope instellingen.
-Uw Account, gepersonaliseerde resultaten en vertalingen zullen later nog volgen..
-
-Vertalers:
-Emanuele Antonio Faraone (it)
-
-Laat gerust iets weten als je wilt helpen vertalen.
-
-!!Deze applicatie is op geen enkele manier verbonden aan www.deezer.com.!!</entry>
 
 <entry>deezer, music, stream, discover, scope</entry>
 <entry xml:lang="it">Deezer, musica, stream, esplora, scope</entry>
